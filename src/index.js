@@ -21,7 +21,7 @@ app.use('/flightsService',
     changeOrigin:true ,
     pathRewrite: {'^flightsService' : '/'}}));
     
-app.use('/bookingService', createProxyMiddleware({target : ServerConfig.BOOKING_SERVICE  , changeOrigin:true}));
+app.use('/bookingService',[f1,f2], createProxyMiddleware({target : ServerConfig.BOOKING_SERVICE  , changeOrigin:true}));
 
 
 app.use('/api',apiRoutes);
@@ -31,3 +31,12 @@ app.listen(ServerConfig.PORT, () => {
       Logger.info('Successfully started the server','root',{})
 })
 
+function f1(req, res , next) {
+    console.log("f1");
+     next();
+}
+
+function f2(req, res, next) {
+  console.log('f2');
+   next();
+}
