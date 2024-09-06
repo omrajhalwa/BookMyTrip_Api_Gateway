@@ -5,7 +5,7 @@ const {
 
 
 const { Enums } = require('../utils/common');
-const {ADMIN , CUSTOMER , FLIGHT_COMPANY} = Enums.USER_ROLES_ENUMS;
+const { ADMIN , CUSTOMER , FLIGHT_COMPANY } = Enums.USER_ROLES_ENUMS;
 
 module.exports = (sequelize, DataTypes) => {
   class Role extends Model {
