@@ -15,6 +15,10 @@ router.post('/signin',
     UserController.signin
 )
 
+router.get('/signout',
+    UserController.signout
+)
+
 router.post('/role',
     AuthRequestMiddlewares.checkAuth,
     AuthRequestMiddlewares.isAdmin,

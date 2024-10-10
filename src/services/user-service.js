@@ -7,9 +7,12 @@ const AppError =require('../utils/errors/app-error')
 const userRepo = new UserRepository();
 const roleRepo = new RoleRepository();
 const {Auth, Enums} = require('../utils/common');
+const firebaseAdmin = require('firebase-admin');
 
-
-
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+firebaseAdmin.initializeApp({
+    credential: firebaseAdmin.credential.cert(serviceAccount),
+});
 
 async function create (data) {
     try {
@@ -51,7 +54,7 @@ async function signin(data){
          
         const jwt = Auth.createToken({id:user.id , email: user.email});
 
-        return jwt;
+        return {jwt,userData:user};
 
     } catch (error) {
         if(error instanceof AppError) throw error;
@@ -60,6 +63,20 @@ async function signin(data){
     }
 }
 
+async function firebaseAuthenticated(token){
+    try {
+        if(!token) {
+            throw new AppError('Missing Google token' , StatusCodes.BAD_REQUEST);
+        }
+
+        const response = await firebaseAdmin.auth().verifyIdToken(token);;
+        
+          console.log(response);
+        return response.email;
+    } catch (error) {
+        return null;
+    }
+}
 
 async function isAuthenticated(token) {
     try {
@@ -143,5 +160,6 @@ module.exports = {
     ,signin
     ,isAuthenticated,
     addRoletoUser,
-    isAdmin
+    isAdmin,
+    firebaseAuthenticated
 }

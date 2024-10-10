@@ -3,6 +3,7 @@ const { UserService } = require('../services');
 const { SuccessResponse, ErrorResponse } = require('../utils/common');
 
 
+
 /**
  * 
  * POST :/signup
@@ -12,14 +13,14 @@ async function signup(req, res) {
     try {
         const user = await UserService.create({
             email: req.body.email,
-            password:req.body.password
+            password: req.body.password
         });
-       SuccessResponse.data=user;
+        SuccessResponse.data = user;
         return res
             .status(StatusCodes.CREATED)
             .json(SuccessResponse)
     } catch (error) {
-        ErrorResponse.error=error;
+        ErrorResponse.error = error;
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR)
             .json(ErrorResponse)
     }
@@ -30,16 +31,40 @@ async function signin(req, res) {
     try {
         const user = await UserService.signin({
             email: req.body.email,
-            password:req.body.password
+            password: req.body.password
         });
-       SuccessResponse.data=user;
+        SuccessResponse.data = user.jwt;
         return res
             .status(StatusCodes.CREATED)
-            .json(SuccessResponse)
+            .cookie('token',
+                SuccessResponse.data,
+                {
+                    httpOnly: true,
+                    sameSite: 'lax',
+                    secure: false,
+                    maxAge: 3600000
+                })
+            .json(user.userData);
     } catch (error) {
-        ErrorResponse.error=error;
+        ErrorResponse.error = error;
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR)
             .json(ErrorResponse)
+    }
+}
+
+async function signout(req, res) {
+    try {
+        return res.status(StatusCodes.OK)
+                  .cookie("token",'',{
+                    expires: new Date(0),
+                    httpOnly: true,
+                    path:'/'
+                  }).json({
+                    message:"User logged out Successfully",
+                    success: true
+                  })
+    } catch (error) {
+        console.log(error);
     }
 }
 
@@ -47,22 +72,23 @@ async function addRoleToUser(req, res) {
     try {
         const user = await UserService.addRoletoUser({
             role: req.body.role,
-            id:req.body.id
+            id: req.body.id
         });
-       SuccessResponse.data=user;
+        SuccessResponse.data = user;
         return res
             .status(StatusCodes.CREATED)
             .json(SuccessResponse)
     } catch (error) {
-        ErrorResponse.error=error;
+        ErrorResponse.error = error;
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR)
             .json(ErrorResponse)
     }
 }
 
 
-module.exports={
+module.exports = {
     signup,
     signin,
+    signout,
     addRoleToUser
 }

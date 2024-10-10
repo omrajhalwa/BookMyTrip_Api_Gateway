@@ -30,11 +30,23 @@ function validateAuthRequest(req, res, next){
 async function checkAuth(req, res, next) {
 
     try {
-     const response =await UserService.isAuthenticated(req.headers['x-access-token']);
-        if(response) {
-            req.user = response; //setting the user id in the req object
+       // console.log(req.cookies);
+    // const response =await UserService.isAuthenticated(req.headers['x-access-token']);
+    const response_of_googleAuth = await UserService.firebaseAuthenticated(req.cookies.firebase_token);
+
+    if(response_of_googleAuth){
+        req.user = response_of_googleAuth;
+        next();
+    }
+
+     const response_of_jwt = await UserService.isAuthenticated(req.cookies.token);
+ 
+    
+        if(response_of_jwt) {
+            req.user = response_of_jwt; //setting the user id in the req object
             next();
         }
+       
     } catch (error) {
         return res
                  .status(error.statusCode)
