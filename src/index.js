@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(limiter);
 app.use(cors({
-  origin:'http://localhost:3002',
+  origin:['http://localhost:3002','https://a40b2d1b.bookmytrip.pages.dev','https://a62ec1c1.bookmytrip.pages.dev','https://dd0ad733.bookmytrip.pages.dev'],
   credentials:true
 }));
 

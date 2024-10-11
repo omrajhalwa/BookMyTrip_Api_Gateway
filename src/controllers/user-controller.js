@@ -40,8 +40,8 @@ async function signin(req, res) {
                 SuccessResponse.data,
                 {
                     httpOnly: true,
-                    sameSite: 'lax',
-                    secure: false,
+                    sameSite: 'None',
+                    secure: true,
                     maxAge: 3600000
                 })
             .json(user.userData);
@@ -52,17 +52,43 @@ async function signin(req, res) {
     }
 }
 
+async function firebaseSignIn(req, res) {
+    try {
+        //console.log(req.body);
+        const token = req.body.token;
+        return res.status(StatusCodes.OK)
+            .cookie('firebase_token', token, {
+                httpOnly: true,
+                sameSite: 'None',
+                secure: true,
+                maxAge: 3600000
+            }).json({
+                message:'cookie created'
+            });
+    } catch (error) {
+        console.log(error);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json(error);
+    }
+}
+
 async function signout(req, res) {
     try {
         return res.status(StatusCodes.OK)
-                  .cookie("token",'',{
-                    expires: new Date(0),
-                    httpOnly: true,
-                    path:'/'
-                  }).json({
-                    message:"User logged out Successfully",
-                    success: true
-                  })
+            .cookie("token", '', {
+                expires: new Date(0),
+                httpOnly: true,
+                sameSite: 'None',
+                secure: true
+            }).cookie("firebase_token", '', {
+                expires: new Date(0),
+                httpOnly: true,
+                sameSite: 'None',
+                secure: true
+            }).json({
+                message: "User logged out Successfully",
+                success: true
+            })
     } catch (error) {
         console.log(error);
     }
@@ -90,5 +116,7 @@ module.exports = {
     signup,
     signin,
     signout,
-    addRoleToUser
+    addRoleToUser,
+    firebaseSignIn
+
 }

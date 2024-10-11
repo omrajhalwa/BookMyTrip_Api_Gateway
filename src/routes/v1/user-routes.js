@@ -15,6 +15,10 @@ router.post('/signin',
     UserController.signin
 )
 
+router.post('/firebase-signin',
+    UserController.firebaseSignIn
+)
+
 router.get('/signout',
     UserController.signout
 )
