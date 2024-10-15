@@ -52,12 +52,12 @@ app.use('/api',apiRoutes);
 
 app.listen(ServerConfig.PORT, () => {
     console.log(`successfully started the server on PORT : ${ServerConfig.PORT}`);
-      Logger.info('Successfully started the server','root',{})
+      Logger.info('Successfully started the server','root',{});
      
 })
 
 function f1(req, res , next) {
- // console.log(req.user);
+ 
     
      next();
 }
