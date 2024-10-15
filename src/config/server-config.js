@@ -18,7 +18,7 @@ config[env].host = process.env.DB_HOST || config[env].host;
 module.exports = config[env];
 
 module.exports = {
-    PORT:process.env.PORT,
+    PORT:process.env.PORT || 3001,
     SALT_ROUNDS:process.env.SALT_ROUNDS,
     JWT_EXPIRY:process.env.JWT_EXPIRY,
     JWT_SECRET:process.env.JWT_SECRET,
